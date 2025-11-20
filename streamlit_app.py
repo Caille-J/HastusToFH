@@ -1,11 +1,4 @@
 # app.py
-import streamlit as st
-import pandas as pd
-import zipfile
-from io import BytesIO
-import requests
-from processFiles import *
-
 def telecharger_fichier_google_drive(lien):
     # Extraire l'ID du fichier Google Drive
     id_fichier = lien.split('/')[-2]
@@ -54,7 +47,7 @@ def main():
 
 
         # Display the first few rows of the new DataFrame
-        display(TotalVoyages.head())
+        st.dataframe(TotalVoyages.head())
 
         # Create a mapping from 'Arrêt1' to 'Description arrêt' using the first Dataframe
         # Assuming the Description arrêt is consistent for a given Arrêt1 across voyages
