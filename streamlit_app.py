@@ -26,7 +26,7 @@ def main():
         try:
             # Télécharger le fichier depuis Google Drive
             fichier_excel = telecharger_fichier_google_drive(lien)
-            df_voyages = pd.read_excel(fichier_excel)
+            df = pd.read_excel(fichier_excel)
             st.subheader("Aperçu des données")
             st.dataframe(df.head())
 
@@ -43,7 +43,7 @@ def main():
             )
 
             if colonnes_a_traiter:
-                df_selectionne = df[colonnes_a_traiter]
+                df_voyages = df[colonnes_a_traiter]
 
             # Exécuter la fonction personnalisée
         except FileNotFoundError:
