@@ -27,17 +27,34 @@ def main():
             # Télécharger le fichier depuis Google Drive
             fichier_excel = telecharger_fichier_google_drive(lien)
             df_voyages = pd.read_excel(fichier_excel)
+            st.subheader("Aperçu des données")
+            st.dataframe(df.head())
+
+            st.subheader("Colonnes disponibles")
+            colonnes_disponibles = df.columns.tolist()
+            st.write(colonnes_disponibles)
+
+            # Sélectionner les colonnes pour le traitement
+            st.subheader("Sélectionner les colonnes à traiter")
+            colonnes_a_traiter = st.multiselect(
+                "Choisissez les colonnes à inclure dans le traitement :",
+                options=colonnes_disponibles,
+                default=colonnes_disponibles
+            )
+
+            if colonnes_a_traiter:
+                df_selectionne = df[colonnes_a_traiter]
 
             # Exécuter la fonction personnalisée
         except FileNotFoundError:
-          print(f"Error: The file was not found at {excel_file_path}")
-          print("Please make sure the file exists and the path is correct.")
+          st.write(f"Error: The file was not found at {lien}")
+          st.write("Please make sure the file exists and the path is correct.")
           # Exit or handle the error appropriately
           df_voyages = None # Set df_voyages to None to prevent further processing       
             
         TotalVoyages = None # Initialize TotalVoyages outside the if block
 
-        if df_voyages is not None:
+        if st.button("Lancer le traitement") and df_voyages is not None:
         # Select the specified columns interactively
           columns_to_select = select_columns_interactively(df_voyages)
           TotalVoyages = df_voyages[columns_to_select]    
@@ -49,9 +66,9 @@ def main():
           if len(columns_to_select) == len(new_column_names):
           # Rename the columns
             TotalVoyages.columns = new_column_names
-            print("Columns renamed successfully.")
+            st.write("Columns renamed successfully.")
         else:
-            print("Warning: Number of selected columns does not match the number of specified new column names. Columns were not renamed.")
+            st.write("Warning: Number of selected columns does not match the number of specified new column names. Columns were not renamed.")
 
 
         # Display the first few rows of the new DataFrame
@@ -63,11 +80,11 @@ def main():
         if 'Arrêt' in TotalVoyages.columns and 'Description' in TotalVoyages.columns:
           stop_description_map = TotalVoyages.set_index('Arrêt')['Description'].to_dict()
         else:
-          print("Warning: 'Arrêt' or 'Description' column not selected. Cannot create stop description map.")
+          st.write("Warning: 'Arrêt' or 'Description' column not selected. Cannot create stop description map.")
           stop_description_map = {}
 
-        print("\n DataFrame created:")
-        print(f"  TotalVoyages")    
+        st.write("\n DataFrame created:")
+        st.write(f"  TotalVoyages")    
             
         # Dataframe des periodes
         dfs_by_context = split_dataframe_by_contexte_service(TotalVoyages)
@@ -77,9 +94,9 @@ def main():
 
         # Loop through periods, lines, directions, and service days
         for period, dfs_by_ligne in dfs_period_ligne.items():
-          print(f"\nProcessing Period: {period}")
+          st.write(f"\nProcessing Period: {period}")
           for line_number, df_ligne in dfs_by_ligne.items():
-            print(f"\nProcessing Ligne: {line_number}")
+            st.write(f"\nProcessing Ligne: {line_number}")
             # Create DataFrames by direction and Js srv for the current line and period
             line_dfs_by_direction_js_srv = create_direction_js_srv_dfs(line_number, {line_number: df_ligne})
 
@@ -89,7 +106,7 @@ def main():
 
                 # Generate CSV for each Direction_Js srv group within the current line and period
                 for group_key in all_voyages_sorted_for_line.keys():
-                    print(f"Generating timetable for group: {group_key}")
+                    st.write(f"Generating timetable for group: {group_key}")
                     # Extract direction and js_srv from the group_key
                     direction, js_srv = group_key.split('_')
                     # Get the merged stops list for the group before calling the function
@@ -97,9 +114,9 @@ def main():
                     if merged_stops_list is not None:
                          dfs.append(generate_timetable_csv_for_group(line_number, period, direction, js_srv, all_voyages_sorted_for_line, stop_description_map, merged_stops_list))
                     else:
-                        print(f"Could not generate timetable for group {group_key} due to missing merged stops.")
+                       st.write(f"Could not generate timetable for group {group_key} due to missing merged stops.")
             else:
-                print(f"Could not create direction/Js srv DataFrames for Ligne {line_number} in Period {period}.")    
+                st.write(f"Could not create direction/Js srv DataFrames for Ligne {line_number} in Period {period}.")    
             
             
 
