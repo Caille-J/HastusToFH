@@ -30,14 +30,6 @@ def main():
             colonnes_disponibles = df.columns.tolist()
             st.write(colonnes_disponibles)
 
-            # Réarranger les colonnes
-            st.subheader("Réarranger les colonnes (glisser-déposer)")
-            colonnes_rearrangees = st.multiselect(
-                "Sélectionnez l'ordre des colonnes :",
-                options=colonnes_disponibles,
-                default=colonnes_disponibles
-            )
-
             # Sélectionner les colonnes pour le traitement
             st.subheader("Sélectionner les colonnes à traiter")
             colonnes_a_traiter = st.multiselect(
