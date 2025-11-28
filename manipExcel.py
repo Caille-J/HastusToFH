@@ -1,1 +1,0 @@
-prendre étape par étape pour avoir un fichier qui fasse le nécessaire puis ensuite charger une autre page avec le document correctement récupérer

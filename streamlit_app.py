@@ -4,15 +4,10 @@ import pandas as pd
 import zipfile
 from io import BytesIO
 import requests
-from processFiles import *
+from Functions.processFiles import *
+from pages.home_app import *
 
-def telecharger_fichier_google_drive(lien):
-    id_fichier = lien.split('/')[-2]
-    url = f"https://drive.google.com/uc?id={id_fichier}"
-    response = requests.get(url)
-    return BytesIO(response.content)
-
-def main():
+def main1():
     st.title("Application de traitement Excel")
     st.write("Fournissez un lien Google Drive vers votre fichier Excel.")
 
